@@ -6,6 +6,43 @@
     android:layout_height="match_parent"
     tools:context=".SingleActivity">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我的步数："
+            android:padding="10dp"/>
+
+        <TextView
+            android:id="@+id/wode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentRight="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="对方的步数："
+            android:padding="10dp"/>
+
+        <TextView
+            android:id="@+id/duifang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"/>
+    </LinearLayout>
+
     <GridLayout
         android:id="@+id/gridlayout"
         android:layout_width="wrap_content"

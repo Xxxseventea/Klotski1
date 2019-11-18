@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.klotski.bean.Picture;
@@ -34,11 +36,30 @@ public class SingleActivity extends AppCompatActivity {
 
     int position = 0;
 
+
+    int count = 0;
+
+    TextView textView;
+
+    //handler更新ui
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0:
+                    textView.setText(String.valueOf(count));
+            }
+        }
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single);
         gridLayout = findViewById(R.id.gridlayout);
+        textView = findViewById(R.id.wode);
         /**
          * 手势问题
          */
@@ -164,62 +185,72 @@ public class SingleActivity extends AppCompatActivity {
      * @param imageView
      */
     private void handleClickItem(final ImageView imageView){
-        if(!isAnimated){
-            TranslateAnimation translateAnimation = null;
-            //右往左
-            if(imageView.getX() > emptyImage.getX()){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(!isAnimated){
+                    TranslateAnimation translateAnimation = null;
+                    //右往左
+                    if(imageView.getX() > emptyImage.getX()){
 
-                translateAnimation = new TranslateAnimation(0,-imageView.getWidth(),0,0);
-            }
-            //左往右
-            if(imageView.getX() < emptyImage.getX()){
-                translateAnimation = new TranslateAnimation(0,imageView.getWidth(),0,0);
-            }
-            //上往下
-            if(imageView.getY() > emptyImage.getY()){
-                translateAnimation = new TranslateAnimation(0,0,0,-imageView.getHeight());
-            }
-
-            //下往上
-            if(imageView.getY() < emptyImage.getY()){
-                translateAnimation = new TranslateAnimation(0,0,0,imageView.getHeight());
-            }
-
-            if(translateAnimation != null){
-                translateAnimation.setDuration(80);  //动画移动时长
-                translateAnimation.setFillAfter(true); //停止时留在最后一帧，否则回到原位
-                translateAnimation.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                        //这时正在移动中，点击其他的图片就不能移动鸟
-                        isAnimated = true;
+                        translateAnimation = new TranslateAnimation(0,-imageView.getWidth(),0,0);
+                    }
+                    //左往右
+                    if(imageView.getX() < emptyImage.getX()){
+                        translateAnimation = new TranslateAnimation(0,imageView.getWidth(),0,0);
+                    }
+                    //上往下
+                    if(imageView.getY() > emptyImage.getY()){
+                        translateAnimation = new TranslateAnimation(0,0,0,-imageView.getHeight());
                     }
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-
-                        //移动结束后清除动画
-                        isAnimated = false;
-                        imageView.clearAnimation(); //停止动画
-
-                        //交换数据
-                        change(imageView);
-                        //每次移动完后都要判断是否完成
-                        boolean isFinish = BitmapHelper.getInstance().isFinish(imageViews,emptyImage);
-                        if(isFinish){
-                            Toast.makeText(SingleActivity.this,"完成",Toast.LENGTH_SHORT).show();
-                        }
+                    //下往上
+                    if(imageView.getY() < emptyImage.getY()){
+                        translateAnimation = new TranslateAnimation(0,0,0,imageView.getHeight());
                     }
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
+                    if(translateAnimation != null){
+                        translateAnimation.setDuration(80);  //动画移动时长
+                        translateAnimation.setFillAfter(true); //停止时留在最后一帧，否则回到原位
+                        translateAnimation.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+                                //这时正在移动中，点击其他的图片就不能移动鸟
+                                isAnimated = true;
+                            }
 
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+
+                                //移动结束后清除动画
+                                isAnimated = false;
+                                imageView.clearAnimation(); //停止动画
+
+                                //交换数据
+                                change(imageView);
+                                //每次移动完后都要判断是否完成
+                                boolean isFinish = BitmapHelper.getInstance().isFinish(imageViews,emptyImage);
+                                if(isFinish){
+                                    Toast.makeText(SingleActivity.this,"完成",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
                     }
-                });
+
+                    imageView.startAnimation(translateAnimation);
+                    count++;
+                    //count加完后发送消息
+                    Message message = new Message();
+                    message.arg1 = 0;
+                    handler.sendMessage(message);
+                }
             }
-
-            imageView.startAnimation(translateAnimation);
-        }
+        }).start();
 
     }
 
