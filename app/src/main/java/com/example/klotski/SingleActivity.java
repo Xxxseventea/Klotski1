@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,9 +36,11 @@ public class SingleActivity extends AppCompatActivity {
     private boolean isAnimated;
 
     int position = 0;
+    Bitmap bitmap;
 
 
     int count = 0;
+    boolean a = false;
 
     TextView textView;
 
@@ -60,6 +63,7 @@ public class SingleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_single);
         gridLayout = findViewById(R.id.gridlayout);
         textView = findViewById(R.id.wode);
+        Button button = findViewById(R.id.test);
         /**
          * 手势问题
          */
@@ -76,24 +80,26 @@ public class SingleActivity extends AppCompatActivity {
         /**
          * 图片初始化
          */
-        Bitmap bitmap = BitmapHelper.getInstance().getBitmap(this,R.mipmap.chongyou);
-        initPicture(bitmap);
+
 
         /**
          * handler来处理ui
          */
+
+                bitmap = BitmapHelper.getInstance().getBitmap(SingleActivity.this,R.mipmap.chongyou);
+
+        initPicture(bitmap);
+
+        /**
+         * 随机数
+         */
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 random();
             }
         },200);
-
-        /**
-         * 随机数
-         */
-
-
 
     }
 
@@ -116,44 +122,44 @@ public class SingleActivity extends AppCompatActivity {
      * @param bitmap
      */
     private void initPicture(Bitmap bitmap){
-        int itemWidth = bitmap.getWidth() / 4;
-        int itemHeight = bitmap.getHeight() / 4;
+            int itemWidth = bitmap.getWidth() / 4;
+            int itemHeight = bitmap.getHeight() / 4;
 
-        //切割16张存入gridlayout里
-        for(int i = 0;i < imageViews.length;i++){
-            for(int j = 0;j < imageViews[0].length;j++){
-                //初始化小bitmap
-                Bitmap bitmap1 = Bitmap.createBitmap(bitmap,j * itemWidth,i*itemHeight,itemWidth,itemHeight);
-                ImageView imageView = new ImageView(this);
-                imageView.setImageBitmap(bitmap1);
-                imageView.setPadding(2,2,2,2);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+            //切割16张存入gridlayout里
+            for (int i = 0; i < imageViews.length; i++) {
+                for (int j = 0; j < imageViews[0].length; j++) {
+                    //初始化小bitmap
+                    Bitmap bitmap1 = Bitmap.createBitmap(bitmap, j * itemWidth, i * itemHeight, itemWidth, itemHeight);
+                    ImageView imageView = new ImageView(this);
+                    imageView.setImageBitmap(bitmap1);
+                    imageView.setPadding(2, 2, 2, 2);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
-                        //点击事件触发动画函数
-                        //判断是否在白块旁边，必须在白块旁边才能移动
-                        if(BitmapHelper.getInstance().isNearEmptyPicture((ImageView) v,emptyImage)){
+                            //点击事件触发动画函数
+                            //判断是否在白块旁边，必须在白块旁边才能移动
+                            if (BitmapHelper.getInstance().isNearEmptyPicture((ImageView) v, emptyImage)) {
 
 
-                            handleClickItem((ImageView) v,true);
+                                handleClickItem((ImageView) v, true);
+                            }
                         }
-                    }
-                });
+                    });
 
-                //设置子图片的位置数据
-                imageView.setTag(new Picture(i,j,bitmap1));
-                //添加子图片在gridlayout里
-                imageViews[i][j] = imageView;
-                gridLayout.addView(imageView);
+                    //设置子图片的位置数据
+                    imageView.setTag(new Picture(i, j, bitmap1));
+                    //添加子图片在gridlayout里
+                    imageViews[i][j] = imageView;
+                    gridLayout.addView(imageView);
+                }
             }
-        }
 
-        //将最后一张图设置为空图片
-        ImageView imageView = (ImageView) gridLayout.getChildAt(gridLayout.getChildCount() - 1);
-        imageView.setImageBitmap(null);
-        emptyImage = imageView;
-    }
+            //将最后一张图设置为空图片
+            ImageView imageView = (ImageView) gridLayout.getChildAt(gridLayout.getChildCount() - 1);
+            imageView.setImageBitmap(null);
+            emptyImage = imageView;
+        }
 
 
     /**

@@ -43,6 +43,11 @@
             android:padding="10dp"/>
     </LinearLayout>
 
+    <Button
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <GridLayout
         android:id="@+id/gridlayout"
         android:layout_width="wrap_content"
