@@ -1,35 +1,34 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout tools:context=".MainActivity"
+    android:background="@drawable/xyh"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-    <TextView
-        android:id="@+id/theme"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:id="@+id/re"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="数字华容道"
-        android:textSize="40sp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"/>
-
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"
+        android:layout_centerInParent="true">
     <Button
         android:id="@+id/single"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="单人游戏"
-        android:layout_below="@+id/theme"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"/>
+        android:layout_width="160dp"
+        android:layout_height="75dp"
+        android:background="@drawable/bg_danren"/>
 
-    <Button
-        android:id="@+id/double1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="双人游戏"
-        android:layout_below="@id/single"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"/>
+   <Button
+       android:id="@+id/double1"
+       android:layout_width="160dp"
+       android:layout_height="75dp"
+       android:layout_below="@+id/single"
+        android:layout_alignLeft="@+id/single"
+       android:layout_marginTop="10dp"
+        android:background="@drawable/bg_shuangren"/>
+
+</RelativeLayout>
 
 </RelativeLayout>

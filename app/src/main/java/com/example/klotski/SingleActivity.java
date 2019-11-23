@@ -6,12 +6,14 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,7 +44,13 @@ public class SingleActivity extends AppCompatActivity {
     int count = 0;
     boolean a = false;
 
+
+
     TextView textView;
+
+    Chronometer chronometer;
+
+    int[] id = {R.drawable.picture1,R.drawable.picture2,R.drawable.picture3,R.drawable.picture4,R.drawable.picture5,R.drawable.picture6,R.drawable.picture7,R.mipmap.chongyou};
 
     //handler更新ui
     Handler handler = new Handler(){
@@ -63,7 +71,21 @@ public class SingleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_single);
         gridLayout = findViewById(R.id.gridlayout);
         textView = findViewById(R.id.wode);
-        Button button = findViewById(R.id.test);
+        Button start = findViewById(R.id.start);
+
+
+        gridLayout.setVisibility(View.INVISIBLE);
+
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //开始计时
+//                chronometer.start();
+//                chronometer.setBase(SystemClock.elapsedRealtime());
+                gridLayout.setVisibility(View.VISIBLE);
+            }
+        });
         /**
          * 手势问题
          */
@@ -85,8 +107,8 @@ public class SingleActivity extends AppCompatActivity {
         /**
          * handler来处理ui
          */
-
-                bitmap = BitmapHelper.getInstance().getBitmap(SingleActivity.this,R.mipmap.chongyou);
+        int random = (int) (Math.random() % 8);
+        bitmap = BitmapHelper.getInstance().getBitmap(SingleActivity.this,id[random]);
 
         initPicture(bitmap);
 
@@ -237,7 +259,8 @@ public class SingleActivity extends AppCompatActivity {
                                 //每次移动完后都要判断是否完成
                                 boolean isFinish = BitmapHelper.getInstance().isFinish(imageViews,emptyImage);
                                 if(isFinish){
-                                    Toast.makeText(SingleActivity.this,"完成",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SingleActivity.this,"恭喜你完成了！",Toast.LENGTH_SHORT).show();
+                                    chronometer.stop();
                                 }
                             }
 
@@ -322,4 +345,5 @@ public class SingleActivity extends AppCompatActivity {
     public boolean onTouchEvent(MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
     }
+
 }

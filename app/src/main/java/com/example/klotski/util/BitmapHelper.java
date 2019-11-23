@@ -3,10 +3,12 @@ package com.example.klotski.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.example.klotski.bean.Picture;
 
@@ -63,7 +65,7 @@ public class BitmapHelper {
         if (screenWidth < bitmapWidth) {
             scale = screenWidth * 1.0f / bitmapWidth;  //同比例缩放高
         }
-        bitmap = Bitmap.createScaledBitmap(bitmap, getScreenWidth(context), (int) (scale * bitmapHeight), false);
+        bitmap = Bitmap.createScaledBitmap(bitmap, 600, 600, false);
         return bitmap;
     }
 
