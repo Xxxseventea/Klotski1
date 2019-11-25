@@ -2,10 +2,12 @@ package com.example.klotski;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,10 +23,15 @@ import android.widget.Toast;
 
 import com.example.klotski.R;
 import com.example.klotski.bean.Picture;
+import com.example.klotski.server.SocketServer;
 import com.example.klotski.util.BitmapHelper;
 import com.example.klotski.util.GestureHelper;
 
-public class DoubleActivity extends AppCompatActivity {
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Random;
+
+public class ServerActivity extends AppCompatActivity {
 
 
     private GridLayout gridLayout;
@@ -48,7 +56,11 @@ public class DoubleActivity extends AppCompatActivity {
 
     TextView textView;
 
+    TextView textView1;
+
     Chronometer chronometer;
+
+    SocketServer socketServer;
 
     int[] id = {R.drawable.picture1,R.drawable.picture2,R.drawable.picture3,R.drawable.picture4,R.drawable.picture5,R.drawable.picture6,R.drawable.picture7,R.mipmap.chongyou};
 
@@ -60,10 +72,10 @@ public class DoubleActivity extends AppCompatActivity {
             switch (msg.what){
                 case 0:
                     textView.setText(String.valueOf(count));
+                    socketServer.sendMessage(String.valueOf(count));
             }
         }
     };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,18 +83,38 @@ public class DoubleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_double);
         gridLayout = findViewById(R.id.gridlayout);
         textView = findViewById(R.id.wode);
+        textView1 = findViewById(R.id.testttt);
         Button start = findViewById(R.id.start);
+        Button button = findViewById(R.id.touxiang);
+
+
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ServerActivity.this,"你输了！",Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
 
 
         gridLayout.setVisibility(View.INVISIBLE);
+
+        socketServer = new SocketServer(6666);
+        socketServer.beginListen();
+
+
+        SocketServer.ServerHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                textView1.setText(msg.obj.toString());
+            }
+        };
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                //开始计时
-//                chronometer.start();
-//                chronometer.setBase(SystemClock.elapsedRealtime());
                 gridLayout.setVisibility(View.VISIBLE);
             }
         });
@@ -108,7 +140,7 @@ public class DoubleActivity extends AppCompatActivity {
          * handler来处理ui
          */
         int random = (int) (Math.random() % 8);
-        bitmap = BitmapHelper.getInstance().getBitmap(DoubleActivity.this,id[random]);
+        bitmap = BitmapHelper.getInstance().getBitmap(ServerActivity.this,id[new Random().nextInt(7)]);
 
         initPicture(bitmap);
 
@@ -259,7 +291,7 @@ public class DoubleActivity extends AppCompatActivity {
                                 //每次移动完后都要判断是否完成
                                 boolean isFinish = BitmapHelper.getInstance().isFinish(imageViews,emptyImage);
                                 if(isFinish){
-                                    Toast.makeText(DoubleActivity.this,"恭喜你完成了！",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ServerActivity.this,"恭喜你完成了！",Toast.LENGTH_SHORT).show();
                                     chronometer.stop();
                                 }
                             }
@@ -274,6 +306,7 @@ public class DoubleActivity extends AppCompatActivity {
                     imageView.startAnimation(translateAnimation);
                     count++;
                     //count加完后发送消息
+
                     Message message = new Message();
                     message.arg1 = 0;
                     handler.sendMessage(message);
@@ -289,6 +322,7 @@ public class DoubleActivity extends AppCompatActivity {
      * @param position
      * @param animation
      */
+
     public void handleFlingGesture(int position,boolean animation){
         ImageView imageView = null;
         Picture emptyImageTag = (Picture) emptyImage.getTag();
@@ -334,6 +368,7 @@ public class DoubleActivity extends AppCompatActivity {
      * @param imageView
      * @param animation
      */
+
     public void handleClickItem(final ImageView imageView,boolean animation){
         if(animation){
             handleClickItem(imageView);
@@ -346,3 +381,4 @@ public class DoubleActivity extends AppCompatActivity {
         return gestureDetector.onTouchEvent(event);
     }
 }
+

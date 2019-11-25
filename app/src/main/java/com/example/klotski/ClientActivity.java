@@ -2,11 +2,11 @@ package com.example.klotski;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,12 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.klotski.bean.Picture;
+import com.example.klotski.client.SocketClient;
 import com.example.klotski.util.BitmapHelper;
 import com.example.klotski.util.GestureHelper;
 
 import java.util.Random;
 
-public class SingleActivity extends AppCompatActivity {
+public class ClientActivity extends AppCompatActivity {
 
 
     private GridLayout gridLayout;
@@ -49,6 +50,8 @@ public class SingleActivity extends AppCompatActivity {
 
 
     TextView textView;
+    TextView textView1;
+    SocketClient socketClient;
 
     Chronometer chronometer;
 
@@ -62,29 +65,48 @@ public class SingleActivity extends AppCompatActivity {
             switch (msg.what){
                 case 0:
                     textView.setText(String.valueOf(count));
+                    socketClient.sendMsg(String.valueOf(count));
             }
         }
     };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single);
+        setContentView(R.layout.activity_client);
         gridLayout = findViewById(R.id.gridlayout);
         textView = findViewById(R.id.wode);
         Button start = findViewById(R.id.start);
+        textView1 = findViewById(R.id.tade);
+        Button button = findViewById(R.id.touxiang);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ClientActivity.this,"你输了！",Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
 
 
+        Intent intent = getIntent();
+        String s = intent.getStringExtra("ip");
+        socketClient = new SocketClient(this,s,6666);
+        socketClient.openClientThread();
         gridLayout.setVisibility(View.INVISIBLE);
+
+        SocketClient.ClientHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                textView1.setText(msg.obj.toString());
+            }
+        };
+
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                //开始计时
-//                chronometer.start();
-//                chronometer.setBase(SystemClock.elapsedRealtime());
                 gridLayout.setVisibility(View.VISIBLE);
             }
         });
@@ -109,8 +131,7 @@ public class SingleActivity extends AppCompatActivity {
         /**
          * handler来处理ui
          */
-       int random = new Random().nextInt(7);
-        bitmap = BitmapHelper.getInstance().getBitmap(SingleActivity.this,id[random]);
+        bitmap = BitmapHelper.getInstance().getBitmap(ClientActivity.this,id[new Random().nextInt(7)]);
 
         initPicture(bitmap);
 
@@ -146,44 +167,44 @@ public class SingleActivity extends AppCompatActivity {
      * @param bitmap
      */
     private void initPicture(Bitmap bitmap){
-            int itemWidth = bitmap.getWidth() / 4;
-            int itemHeight = bitmap.getHeight() / 4;
+        int itemWidth = bitmap.getWidth() / 4;
+        int itemHeight = bitmap.getHeight() / 4;
 
-            //切割16张存入gridlayout里
-            for (int i = 0; i < imageViews.length; i++) {
-                for (int j = 0; j < imageViews[0].length; j++) {
-                    //初始化小bitmap
-                    Bitmap bitmap1 = Bitmap.createBitmap(bitmap, j * itemWidth, i * itemHeight, itemWidth, itemHeight);
-                    ImageView imageView = new ImageView(this);
-                    imageView.setImageBitmap(bitmap1);
-                    imageView.setPadding(2, 2, 2, 2);
-                    imageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+        //切割16张存入gridlayout里
+        for (int i = 0; i < imageViews.length; i++) {
+            for (int j = 0; j < imageViews[0].length; j++) {
+                //初始化小bitmap
+                Bitmap bitmap1 = Bitmap.createBitmap(bitmap, j * itemWidth, i * itemHeight, itemWidth, itemHeight);
+                ImageView imageView = new ImageView(this);
+                imageView.setImageBitmap(bitmap1);
+                imageView.setPadding(2, 2, 2, 2);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                            //点击事件触发动画函数
-                            //判断是否在白块旁边，必须在白块旁边才能移动
-                            if (BitmapHelper.getInstance().isNearEmptyPicture((ImageView) v, emptyImage)) {
+                        //点击事件触发动画函数
+                        //判断是否在白块旁边，必须在白块旁边才能移动
+                        if (BitmapHelper.getInstance().isNearEmptyPicture((ImageView) v, emptyImage)) {
 
 
-                                handleClickItem((ImageView) v, true);
-                            }
+                            handleClickItem((ImageView) v, true);
                         }
-                    });
+                    }
+                });
 
-                    //设置子图片的位置数据
-                    imageView.setTag(new Picture(i, j, bitmap1));
-                    //添加子图片在gridlayout里
-                    imageViews[i][j] = imageView;
-                    gridLayout.addView(imageView);
-                }
+                //设置子图片的位置数据
+                imageView.setTag(new Picture(i, j, bitmap1));
+                //添加子图片在gridlayout里
+                imageViews[i][j] = imageView;
+                gridLayout.addView(imageView);
             }
-
-            //将最后一张图设置为空图片
-            ImageView imageView = (ImageView) gridLayout.getChildAt(gridLayout.getChildCount() - 1);
-            imageView.setImageBitmap(null);
-            emptyImage = imageView;
         }
+
+        //将最后一张图设置为空图片
+        ImageView imageView = (ImageView) gridLayout.getChildAt(gridLayout.getChildCount() - 1);
+        imageView.setImageBitmap(null);
+        emptyImage = imageView;
+    }
 
 
     /**
@@ -261,7 +282,7 @@ public class SingleActivity extends AppCompatActivity {
                                 //每次移动完后都要判断是否完成
                                 boolean isFinish = BitmapHelper.getInstance().isFinish(imageViews,emptyImage);
                                 if(isFinish){
-                                    Toast.makeText(SingleActivity.this,"恭喜你完成了！",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ClientActivity.this,"恭喜你完成了！",Toast.LENGTH_SHORT).show();
                                     chronometer.stop();
                                 }
                             }
@@ -291,6 +312,7 @@ public class SingleActivity extends AppCompatActivity {
      * @param position
      * @param animation
      */
+
     public void handleFlingGesture(int position,boolean animation){
         ImageView imageView = null;
         Picture emptyImageTag = (Picture) emptyImage.getTag();
@@ -336,6 +358,7 @@ public class SingleActivity extends AppCompatActivity {
      * @param imageView
      * @param animation
      */
+
     public void handleClickItem(final ImageView imageView,boolean animation){
         if(animation){
             handleClickItem(imageView);
@@ -347,5 +370,4 @@ public class SingleActivity extends AppCompatActivity {
     public boolean onTouchEvent(MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
     }
-
 }

@@ -11,11 +11,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.Toast;
+
+import com.example.klotski.socket.Constant;
+
+import java.util.Random;
 
 public class Main2Activity extends AppCompatActivity {
     Button tiaozhan;
     Button beilianjie;
+
+    EditText et_ip_c;
+    EditText et_port_c;
+    EditText et_port_s;
+    int random;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,9 +33,12 @@ public class Main2Activity extends AppCompatActivity {
         tiaozhan = findViewById(R.id.tiaozhan);
         beilianjie = findViewById(R.id.dengdai);
 
+
+        random = new Random().nextInt(7);
         tiaozhan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Constant.connected = 1;
                 showpopwinds();
             }
         });
@@ -34,6 +46,7 @@ public class Main2Activity extends AppCompatActivity {
         beilianjie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Constant.connected = 0;
                showpopwind();
             }
         });
@@ -46,11 +59,10 @@ public class Main2Activity extends AppCompatActivity {
 
         popupWindow.setFocusable(true);
         popupWindow.setTouchable(true);
-        Button cancel = view.findViewById(R.id.cancel);
-        Button comfirm = view.findViewById(R.id.comfirm);
-        EditText editText = view.findViewById(R.id.et);
-        String s = String.valueOf(editText.getText());
-        final boolean a = s.matches("([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}");
+        Button cancel = view.findViewById(R.id.cancel_s);
+        Button comfirm = view.findViewById(R.id.comfirm_s);
+        et_port_s = view.findViewById(R.id.et);
+        String s = String.valueOf(et_port_s.getText());
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,18 +73,16 @@ public class Main2Activity extends AppCompatActivity {
         comfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(a){
-                    Intent intent = new Intent(Main2Activity.this,DoubleActivity.class);
+
+                    Intent intent = new Intent(Main2Activity.this, ServerActivity.class);
                     startActivity(intent);
-                }
-                else{
-                    Toast.makeText(Main2Activity.this,"输入ip地址有误",Toast.LENGTH_SHORT).show();
-                }
             }
         });
         View root = LayoutInflater.from(this).inflate(R.layout.activity_main,null);
         popupWindow.showAtLocation(root, Gravity.CENTER,0,0);
     }
+
+
     public void showpopwinds(){
 
         View view = LayoutInflater.from(this).inflate(R.layout.popwindows,null);
@@ -82,10 +92,9 @@ public class Main2Activity extends AppCompatActivity {
         popupWindow.setTouchable(true);
         Button cancel = view.findViewById(R.id.cancel);
         Button comfirm = view.findViewById(R.id.comfirm);
-        EditText editText = view.findViewById(R.id.et);
-        EditText editText1 = view.findViewById(R.id.et_ip);
-        String s = String.valueOf(editText.getText());
-        final boolean a = s.matches("([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}");
+        et_ip_c = view.findViewById(R.id.et_ip);
+        et_port_c = view.findViewById(R.id.et_port);
+//        String s = String.valueOf(et_port_c.getText());
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,13 +105,10 @@ public class Main2Activity extends AppCompatActivity {
         comfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(a){
-                    Intent intent = new Intent(Main2Activity.this,DoubleActivity.class);
+                    Intent intent = new Intent(Main2Activity.this, ClientActivity.class);
+                    intent.putExtra("ip",et_ip_c.getText().toString());
                     startActivity(intent);
-                }
-                else{
-                    Toast.makeText(Main2Activity.this,"输入ip地址有误",Toast.LENGTH_SHORT).show();
-                }
+
             }
         });
         View root = LayoutInflater.from(this).inflate(R.layout.activity_main,null);

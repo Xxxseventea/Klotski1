@@ -33,7 +33,7 @@
 
 
     <Button
-        android:id="@+id/cancel"
+        android:id="@+id/cancel_s"
         android:layout_width="90dp"
         android:layout_height="30dp"
         android:layout_below="@+id/et"
@@ -41,7 +41,7 @@
         android:layout_alignLeft="@+id/et"
         android:background="@drawable/cancel" />
     <Button
-        android:id="@+id/comfirm"
+        android:id="@+id/comfirm_s"
         android:layout_width="90dp"
         android:layout_height="30dp"
         android:layout_below="@+id/et"
@@ -51,7 +51,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:layout_below="@id/comfirm"/>
+        android:layout_below="@id/comfirm_s"/>
 
 
 </RelativeLayout>

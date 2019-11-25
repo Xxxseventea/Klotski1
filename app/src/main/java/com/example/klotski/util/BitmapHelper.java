@@ -65,7 +65,7 @@ public class BitmapHelper {
         if (screenWidth < bitmapWidth) {
             scale = screenWidth * 1.0f / bitmapWidth;  //同比例缩放高
         }
-        bitmap = Bitmap.createScaledBitmap(bitmap, 600, 600, false);
+        bitmap = Bitmap.createScaledBitmap(bitmap, 800, 800, false);
         return bitmap;
     }
 
