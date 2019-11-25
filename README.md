@@ -15,3 +15,6 @@
 
 ![](https://github.com/Xxxseventea/Klotski1/blob/master/images/5.png)
 
+![](https://github.com/Xxxseventea/Klotski1/blob/master/images/6.png)
+
+![](https://github.com/Xxxseventea/Klotski1/blob/master/images/7.png)
