@@ -4,4 +4,14 @@
 
 ### 感谢室友小改改的ui图~~
 
-![](https://github.com/Xxxseventea/ZhiHu-Daily/blob/master/images/%E4%B8%BB%E9%A1%B5%E9%9D%A2.gif)
+![](https://github.com/Xxxseventea/Klotski1/blob/master/images/2%20(1).png)
+
+
+![](https://github.com/Xxxseventea/Klotski1/blob/master/images/2%20(2).png)
+
+![](https://github.com/Xxxseventea/Klotski1/blob/master/images/3.png)
+
+![](https://github.com/Xxxseventea/Klotski1/blob/master/images/4.png)
+
+![](https://github.com/Xxxseventea/Klotski1/blob/master/images/5.png)
+
