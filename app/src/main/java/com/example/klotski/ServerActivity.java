@@ -101,7 +101,9 @@ public class ServerActivity extends AppCompatActivity {
         gridLayout.setVisibility(View.INVISIBLE);
 
         socketServer = new SocketServer(6666);
+
         socketServer.beginListen();
+
 
 
         SocketServer.ServerHandler = new Handler(){
