@@ -14,6 +14,8 @@
 
 - 为啥这么多要求呀，还不是我太菜了没有后端啊QAQ
 
+- 懒得写计时了，写了计时还要判断，就根据步数判断嘛哎呀
+
 ![](https://github.com/Xxxseventea/Klotski1/blob/master/images/2%20(1).png)
 
 
