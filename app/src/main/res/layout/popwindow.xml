@@ -16,7 +16,7 @@
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="请输入IP"
+        android:text="请输入端口号"
         android:textSize="20dp"
         android:textColor="#000000"
         android:layout_below="@+id/image"
